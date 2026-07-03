@@ -243,7 +243,13 @@
       <div class="cta-row">
         <a href="about.html" class="btn outline" data-nav>About Us</a>
         <a href="officers.html" class="btn outline" data-nav>Officers</a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScvj_Q0q45x09JRSqxaDp6x8k_M5aKG2GwLcdfaENgBh1dz-g/viewform" class="btn outline" target="_blank" rel="noopener">Join Us</a>
+        <div class="social-dd" id="joinDd">
+          <button type="button" class="btn outline" id="joinBtn" aria-haspopup="true" aria-expanded="false">Join Us <span class="dd-caret">▾</span></button>
+          <div class="dd-menu" role="menu">
+            <a class="dd-item" href="https://docs.google.com/forms/d/e/1FAIpQLScvj_Q0q45x09JRSqxaDp6x8k_M5aKG2GwLcdfaENgBh1dz-g/viewform" target="_blank" rel="noopener" role="menuitem">The Club</a>
+            <a class="dd-item" href="https://docs.google.com/forms/d/e/1FAIpQLSd9f8PqrvYJAP1_lKOusCsh_4Kl9hgHzsBsksp9b0HttMHeZw/viewform" target="_blank" rel="noopener" role="menuitem">A Chapter</a>
+          </div>
+        </div>
       </div>
       <div class="social-dd" id="socialDd">
         <button type="button" class="btn outline" id="socialBtn" aria-haspopup="true" aria-expanded="false">Social <span class="dd-caret">▾</span></button>
@@ -272,20 +278,24 @@
     }
     window.addEventListener('pageshow', reveal);
 
-    // ---- Social dropdown ----
-    const socialDd = document.getElementById('socialDd');
-    const socialBtn = document.getElementById('socialBtn');
-    socialBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const open = socialDd.classList.toggle('open');
-      socialBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    // ---- Dropdowns (Join Us + Social) ----
+    const dropdowns = document.querySelectorAll('.social-dd');
+    function closeAllDropdowns() {
+      dropdowns.forEach(dd => { dd.classList.remove('open'); dd.querySelector('button').setAttribute('aria-expanded', 'false'); });
+    }
+    dropdowns.forEach(dd => {
+      const btn = dd.querySelector('button');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasOpen = dd.classList.contains('open');
+        closeAllDropdowns();
+        if (!wasOpen) { dd.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+      });
     });
     document.addEventListener('click', (e) => {
-      if (!socialDd.contains(e.target)) { socialDd.classList.remove('open'); socialBtn.setAttribute('aria-expanded', 'false'); }
+      dropdowns.forEach(dd => { if (!dd.contains(e.target)) { dd.classList.remove('open'); dd.querySelector('button').setAttribute('aria-expanded', 'false'); } });
     });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { socialDd.classList.remove('open'); socialBtn.setAttribute('aria-expanded', 'false'); }
-    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDropdowns(); });
 
     // ---- Aesthetic page transition: gently fade to sage, then navigate ----
     function fadeTo(url) {
