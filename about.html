@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — The Medical Minute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mint: #dcebdb; --sage-light: #c3dac6; --sage: #a7c6b2; --sage-mid: #8fb49f;
+    --sage-warm: #cdd6a9; --sage-deep: #6f8f78; --sage-edge: #55735e;
+    --white: #fbfdfa; --cream: #f3f6ec; --ink: #38503f;
+    --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans: "Jost", "Segoe UI", system-ui, sans-serif;
+    --ease: cubic-bezier(0.22, 0.75, 0.28, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-x: clip; }
+  body {
+    font-family: var(--serif); color: var(--white); background: var(--sage);
+    -webkit-font-smoothing: antialiased; position: relative;
+  }
+  ::selection { background: rgba(255,255,255,0.25); }
+  a:focus-visible { outline: 2px solid var(--white); outline-offset: 4px; border-radius: 4px; }
+
+  /* ---------- Background ---------- */
+  .bg { position: fixed; inset: -20%; z-index: -3;
+    background:
+      radial-gradient(closest-side at 30% 22%, var(--mint), transparent 70%),
+      radial-gradient(closest-side at 74% 32%, var(--sage-light), transparent 72%),
+      radial-gradient(closest-side at 62% 86%, var(--sage-warm), transparent 70%),
+      radial-gradient(closest-side at 18% 80%, var(--sage-mid), transparent 72%),
+      linear-gradient(135deg, var(--sage-light), var(--sage-mid) 55%, var(--sage-deep));
+    filter: saturate(1.02); animation: cloud 26s ease-in-out infinite alternate; }
+  @keyframes cloud { 0% { transform: scale(1) translate(0,0);} 50% { transform: scale(1.08) translate(1.5%,-1.5%);} 100% { transform: scale(1.04) translate(-1.5%,1%);} }
+  .vignette { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(ellipse 90% 80% at 50% 40%, transparent 52%, rgba(55,80,63,0.30) 100%); }
+  .grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
+  .glow { position: fixed; border-radius: 50%; filter: blur(70px); z-index: -2; pointer-events: none; opacity: 0.45; }
+  .glow.g1 { width: 42vw; height: 42vw; background: radial-gradient(circle, rgba(255,255,255,0.5), transparent 70%); top: 2%; left: 10%; animation: float1 20s ease-in-out infinite; }
+  .glow.g2 { width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(205,214,169,0.55), transparent 70%); bottom: 4%; right: 8%; animation: float2 24s ease-in-out infinite; }
+  @keyframes float1 { 0%,100% { transform: translate(0,0);} 50% { transform: translate(4%,5%);} }
+  @keyframes float2 { 0%,100% { transform: translate(0,0);} 50% { transform: translate(-5%,-3%);} }
+
+  /* ---------- Top bar ---------- */
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 24px 6vw; }
+  .back { font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.72rem; color: rgba(255,255,255,0.85); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: color 0.3s, gap 0.3s var(--ease); }
+  .back:hover { color: var(--white); gap: 14px; }
+  .back .arrow { display: inline-block; transition: transform 0.3s var(--ease); }
+  .back:hover .arrow { transform: translateX(-3px); }
+  .mini-mark { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 1.15rem; color: rgba(255,255,255,0.9); letter-spacing: 0.02em; }
+
+  /* ---------- Panels (full-screen scroll sections) ---------- */
+  .panel {
+    min-height: 100vh; min-height: 100dvh;
+    scroll-snap-align: start;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 110px 7vw 90px; position: relative;
+  }
+  .panel-inner { max-width: 720px; }
+
+  .eyebrow {
+    font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.36em;
+    font-size: clamp(0.62rem, 1.4vw, 0.76rem); color: rgba(255,255,255,0.82); margin-bottom: 26px; padding-left: 0.36em;
+  }
+  .panel h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.8rem, 8vw, 4.8rem); line-height: 1.02; letter-spacing: -0.5px; text-shadow: 0 2px 30px rgba(85,115,94,0.35); }
+  .panel h2 { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: clamp(2.1rem, 6vw, 3.4rem); line-height: 1.05; letter-spacing: -0.3px; margin-bottom: 22px; text-shadow: 0 2px 30px rgba(85,115,94,0.35); }
+  .panel p { font-family: var(--serif); font-weight: 400; font-size: clamp(1.18rem, 2.5vw, 1.6rem); line-height: 1.6; color: rgba(255,255,255,0.94); max-width: 42ch; margin: 0 auto; }
+  .panel .lead { font-size: clamp(1.3rem, 2.9vw, 1.8rem); }
+  .panel .closer { margin-top: 34px; font-style: italic; font-size: clamp(1.1rem, 2.4vw, 1.45rem); color: var(--white); }
+  .panel .foot { margin-top: 26px; font-family: var(--sans); font-weight: 300; text-transform: uppercase; letter-spacing: 0.28em; font-size: 0.7rem; color: rgba(255,255,255,0.7); }
+
+  .ecg-divider { display: block; width: clamp(120px, 22vw, 220px); height: 26px; overflow: visible; margin: 30px auto 40px; }
+  .ecg-divider path { fill: none; stroke: rgba(255,255,255,0.85); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 360; stroke-dashoffset: 360; animation: trace 3.8s cubic-bezier(0.6,0,0.4,1) infinite 0.5s; }
+  @keyframes trace { 0% { stroke-dashoffset: 360; } 60%,100% { stroke-dashoffset: 0; } }
+
+  /* next / previous page cues */
+  .cue { position: absolute; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; color: rgba(255,255,255,0.78); transition: color 0.3s var(--ease); z-index: 20; text-align: center; }
+  .cue:hover { color: var(--white); }
+  .cue.down { bottom: 26px; }
+  .cue.up { top: 78px; }
+  .cue-kicker { font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.3em; font-size: 0.56rem; opacity: 0.85; padding-left: 0.3em; }
+  .cue-title { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: clamp(1rem, 2.3vw, 1.35rem); line-height: 1.1; }
+  .cue-arrow { font-size: 1.15rem; line-height: 1; opacity: 0.9; }
+  .cue.down .cue-arrow { animation: bobDown 1.8s ease-in-out infinite; }
+  .cue.up .cue-arrow { animation: bobUp 1.8s ease-in-out infinite; }
+  @keyframes bobDown { 0%,100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+  @keyframes bobUp { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+  /* side progress dots */
+  .dots { position: fixed; right: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 15px; z-index: 60; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.6); background: transparent; transition: transform 0.3s var(--ease), background 0.3s, border-color 0.3s; }
+  .dot:hover { border-color: var(--white); }
+  .dot.active { background: var(--white); border-color: var(--white); transform: scale(1.3); }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* page transition cover */
+  .tcover { position: fixed; inset: 0; z-index: 9990; pointer-events: none; opacity: 1; }
+  .tcover.sage { background: linear-gradient(135deg, var(--sage-light), var(--sage-mid) 55%, var(--sage-deep)); }
+  .tcover.black { background: #000; }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 20px 5vw; }
+    .dots { right: 16px; gap: 12px; }
+    .panel { padding: 100px 7vw 80px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html, body { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .ecg-divider path { stroke-dashoffset: 0 !important; }
+    .tcover { transition: opacity 0.2s linear; }
+  }
+</style>
+</head>
+<body>
+  <div class="tcover sage" id="rc"></div>
+
+  <div class="bg"></div>
+  <div class="vignette"></div>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="grain"></div>
+
+  <div class="topbar">
+    <a href="index.html" class="back" data-nav data-back><span class="arrow">←</span> Back</a>
+    <span class="mini-mark">The Medical Minute</span>
+  </div>
+
+  <div class="dots">
+    <a href="#p1" class="dot active" aria-label="About"></a>
+    <a href="#p2" class="dot" aria-label="Mission"></a>
+    <a href="#p3" class="dot" aria-label="Impact"></a>
+  </div>
+
+  <!-- Panel 1 -->
+  <section class="panel" id="p1">
+    <div class="panel-inner reveal">
+      <div class="eyebrow">01 — Who we are</div>
+      <h1>About Us</h1>
+      <svg class="ecg-divider" viewBox="0 0 220 26" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <path d="M2,13 L86,13 L96,13 L104,3 L112,23 L120,13 L128,13 L204,13 L212,13 L218,13"/>
+      </svg>
+      <p class="lead">The Medical Minute is a student-led organization and research-based platform dedicated to making accurate, evidence-based medical knowledge more accessible, engaging, and easy to understand for students—by students.</p>
+    </div>
+    <a class="cue down" href="#p2" aria-label="Next: Our Mission">
+      <span class="cue-kicker">Next</span>
+      <span class="cue-title">Our Mission</span>
+      <span class="cue-arrow">˅</span>
+    </a>
+  </section>
+
+  <!-- Panel 2 -->
+  <section class="panel" id="p2">
+    <a class="cue up" href="#p1" aria-label="Previous: About Us">
+      <span class="cue-arrow">˄</span>
+      <span class="cue-title">About Us</span>
+      <span class="cue-kicker">Previous</span>
+    </a>
+    <div class="panel-inner reveal">
+      <div class="eyebrow">02 — What drives us</div>
+      <h2>Our Mission</h2>
+      <p>Our mission is to educate and inspire the next generation of healthcare leaders by sharing trustworthy medical information through research-based content, myth-vs.-fact education, health awareness campaigns, community outreach, and educational workshops.</p>
+    </div>
+    <a class="cue down" href="#p3" aria-label="Next: Our Impact">
+      <span class="cue-kicker">Next</span>
+      <span class="cue-title">Our Impact</span>
+      <span class="cue-arrow">˅</span>
+    </a>
+  </section>
+
+  <!-- Panel 3 -->
+  <section class="panel" id="p3">
+    <a class="cue up" href="#p2" aria-label="Previous: Our Mission">
+      <span class="cue-arrow">˄</span>
+      <span class="cue-title">Our Mission</span>
+      <span class="cue-kicker">Previous</span>
+    </a>
+    <div class="panel-inner reveal">
+      <div class="eyebrow">03 — Our promise</div>
+      <h2>Our Impact</h2>
+      <p>Beyond education, we are committed to making a meaningful impact by supporting communities through fundraising, advocacy initiatives, volunteer service, and partnerships that promote health awareness and improve access to reliable medical information.</p>
+      <p class="closer">Trustworthy medical knowledge —<br>for students, by students.</p>
+      <p class="foot">@themedicalminute&nbsp;&nbsp;·&nbsp;&nbsp;New post every day</p>
+    </div>
+  </section>
+
+  <script>
+    const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const EASE = 'cubic-bezier(0.22,0.75,0.28,1)';
+
+    // ---- Reveal on load ----
+    sessionStorage.setItem('tmm_seen', '1');
+    const rc = document.getElementById('rc');
+    rc.style.transition = 'opacity 0.7s ' + EASE;
+    function reveal() { rc.style.display = ''; setTimeout(() => { rc.style.opacity = '0'; }, 30); setTimeout(() => { rc.style.display = 'none'; }, 850); }
+    window.addEventListener('pageshow', reveal);
+
+    // ---- Content reveal as each panel enters ----
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // ---- Active progress dot ----
+    const dots = Array.from(document.querySelectorAll('.dot'));
+    const pio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = '#' + e.target.id;
+          dots.forEach(d => d.classList.toggle('active', d.getAttribute('href') === id));
+        }
+      });
+    }, { threshold: 0.55 });
+    document.querySelectorAll('.panel').forEach(p => pio.observe(p));
+
+    // ---- Aesthetic page transition ----
+    function fadeTo(url) {
+      const cover = document.createElement('div');
+      cover.className = 'tcover sage';
+      cover.style.opacity = '0';
+      cover.style.transition = 'opacity 0.55s ' + EASE;
+      document.body.appendChild(cover);
+      setTimeout(() => { cover.style.opacity = '1'; }, 20);
+      setTimeout(() => { window.location.href = url; }, 560);
+    }
+    document.querySelectorAll('a[data-nav]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const url = link.getAttribute('href');
+        if (!url || url.startsWith('#')) return;
+        e.preventDefault();
+        if (RM) { window.location.href = url; return; }
+        fadeTo(url);
+      });
+    });
+  </script>
+</body>
+</html>

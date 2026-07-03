@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Officers — The Medical Minute</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mint: #dcebdb; --sage-light: #c3dac6; --sage: #a7c6b2; --sage-mid: #8fb49f;
+    --sage-warm: #cdd6a9; --sage-deep: #6f8f78; --sage-edge: #55735e;
+    --white: #fbfdfa; --cream: #f3f6ec; --ink: #38503f;
+    --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans: "Jost", "Segoe UI", system-ui, sans-serif;
+    --ease: cubic-bezier(0.22, 0.75, 0.28, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--serif); color: var(--white); background: var(--sage); -webkit-font-smoothing: antialiased; min-height: 100vh; position: relative; overflow-x: hidden; }
+  ::selection { background: rgba(255,255,255,0.25); }
+  a:focus-visible { outline: 2px solid var(--white); outline-offset: 4px; border-radius: 4px; }
+
+  /* ---------- Background (matches home) ---------- */
+  .bg { position: fixed; inset: -20%; z-index: -3;
+    background:
+      radial-gradient(closest-side at 30% 22%, var(--mint), transparent 70%),
+      radial-gradient(closest-side at 74% 32%, var(--sage-light), transparent 72%),
+      radial-gradient(closest-side at 62% 86%, var(--sage-warm), transparent 70%),
+      radial-gradient(closest-side at 18% 80%, var(--sage-mid), transparent 72%),
+      linear-gradient(135deg, var(--sage-light), var(--sage-mid) 55%, var(--sage-deep));
+    filter: saturate(1.02); animation: cloud 26s ease-in-out infinite alternate; }
+  @keyframes cloud { 0% { transform: scale(1) translate(0,0);} 50% { transform: scale(1.08) translate(1.5%,-1.5%);} 100% { transform: scale(1.04) translate(-1.5%,1%);} }
+  .vignette { position: fixed; inset: 0; z-index: -2; pointer-events: none; background: radial-gradient(ellipse 90% 80% at 50% 30%, transparent 55%, rgba(55,80,63,0.28) 100%); }
+  .grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
+  .glow { position: fixed; border-radius: 50%; filter: blur(70px); z-index: -2; pointer-events: none; opacity: 0.45; }
+  .glow.g1 { width: 42vw; height: 42vw; background: radial-gradient(circle, rgba(255,255,255,0.5), transparent 70%); top: 2%; left: 10%; animation: float1 20s ease-in-out infinite; }
+  .glow.g2 { width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(205,214,169,0.55), transparent 70%); bottom: 4%; right: 8%; animation: float2 24s ease-in-out infinite; }
+  @keyframes float1 { 0%,100% { transform: translate(0,0);} 50% { transform: translate(4%,5%);} }
+  @keyframes float2 { 0%,100% { transform: translate(0,0);} 50% { transform: translate(-5%,-3%);} }
+
+  /* ---------- Top bar ---------- */
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 24px 6vw; }
+  .back { font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.72rem; color: rgba(255,255,255,0.85); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: color 0.3s, gap 0.3s var(--ease); }
+  .back:hover { color: var(--white); gap: 14px; }
+  .back .arrow { display: inline-block; transition: transform 0.3s var(--ease); }
+  .back:hover .arrow { transform: translateX(-3px); }
+  .mini-mark { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 1.15rem; color: rgba(255,255,255,0.9); letter-spacing: 0.02em; }
+
+  /* ---------- Content ---------- */
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 16vh 6vw 110px; text-align: center; }
+  .kicker { font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.4em; font-size: clamp(0.62rem, 1.4vw, 0.76rem); color: rgba(255,255,255,0.82); padding-left: 0.4em; margin-bottom: 20px; }
+  h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(2.8rem, 8vw, 4.6rem); line-height: 1.02; letter-spacing: -0.5px; margin: 0 0 6px; }
+  .wrap > h1 { text-shadow: 0 2px 30px rgba(85,115,94,0.35); }
+  h1 em { font-style: italic; }
+  .sub { font-family: var(--serif); font-size: clamp(1.1rem, 2.4vw, 1.4rem); color: rgba(255,255,255,0.9); max-width: 44ch; margin: 10px auto 0; }
+
+  .ecg-divider { display: block; width: clamp(120px, 22vw, 220px); height: 26px; overflow: visible; margin: 26px auto 54px; }
+  .ecg-divider path { fill: none; stroke: rgba(255,255,255,0.85); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 360; stroke-dashoffset: 360; animation: trace 3.8s cubic-bezier(0.6,0,0.4,1) infinite 0.5s; }
+  @keyframes trace { 0% { stroke-dashoffset: 360; } 60%,100% { stroke-dashoffset: 0; } }
+
+  /* ---------- Officer grid ---------- */
+  .officers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+  .officer {
+    background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.24); border-radius: 26px;
+    padding: 48px 34px; backdrop-filter: blur(6px); text-align: center; cursor: pointer;
+    transition: transform 0.4s var(--ease), border-color 0.4s, background 0.4s;
+  }
+  .officer:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.15); animation: cardbeat 1s ease-in-out infinite; }
+  .officer:active { transform: scale(0.975); }
+  @keyframes cardbeat { 0%,100% { transform: scale(1); } 18% { transform: scale(1.05); } 32% { transform: scale(1); } 48% { transform: scale(1.03); } 62% { transform: scale(1); } }
+
+  /* ---------- Officer detail modal ---------- */
+  .modal { position: fixed; inset: 0; z-index: 9995; display: none; perspective: 1700px; overflow: hidden; }
+  .modal.open, .modal.closing { display: block; }
+  .modal-backdrop { position: absolute; inset: 0; background: rgba(18,38,28,0.55); backdrop-filter: blur(9px); opacity: 0; transition: opacity 0.45s var(--ease); }
+  .modal.open .modal-backdrop { opacity: 1; }
+  .modal.closing .modal-backdrop { opacity: 0; }
+  .modal-card {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: min(920px, 92vw); max-height: 88vh; display: flex; overflow: hidden;
+    background: linear-gradient(150deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+    border: 1px solid rgba(255,255,255,0.32); border-radius: 28px; backdrop-filter: blur(18px);
+    box-shadow: 0 44px 100px -34px rgba(18,38,28,0.75); transform-style: preserve-3d;
+  }
+  /* opening: flip upright, then widen; closing reverses */
+  .modal.open .modal-card { animation: cardOpen 0.85s var(--ease) both; }
+  .modal.closing .modal-card { animation: cardClose 0.6s var(--ease) both; }
+  @keyframes cardOpen {
+    0%   { opacity: 0; transform: translate(-50%,-50%) rotateY(90deg) scaleX(0.3); }
+    45%  { opacity: 1; transform: translate(-50%,-50%) rotateY(0deg) scaleX(0.3); }
+    100% { opacity: 1; transform: translate(-50%,-50%) rotateY(0deg) scaleX(1); }
+  }
+  @keyframes cardClose {
+    0%   { opacity: 1; transform: translate(-50%,-50%) rotateY(0deg) scaleX(1); }
+    55%  { opacity: 1; transform: translate(-50%,-50%) rotateY(0deg) scaleX(0.3); }
+    100% { opacity: 0; transform: translate(-50%,-50%) rotateY(90deg) scaleX(0.3); }
+  }
+  /* photo panel shows the ENTIRE image, with a blurred fill behind */
+  .modal-photo { position: relative; flex: 0 0 42%; overflow: hidden; display: grid; place-items: center; background: rgba(14,30,22,0.6); }
+  .modal-photo::before { content: ''; position: absolute; inset: -12%; background-image: var(--photo, none); background-size: cover; background-position: center; filter: blur(24px) brightness(0.55) saturate(1.15); }
+  .modal-photo img { position: relative; z-index: 1; max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
+  .modal-body { flex: 1; padding: 46px 44px; overflow-y: auto; text-align: left; }
+  /* content fades in once the card has widened */
+  .modal.open .modal-photo { animation: contentIn 0.45s var(--ease) 0.72s both; }
+  .modal.open .modal-body { animation: contentIn 0.5s var(--ease) 0.78s both; }
+  @keyframes contentIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  /* on close: hide the contents first so they don't squish as the card narrows */
+  .modal.closing .modal-photo, .modal.closing .modal-body { animation: none; opacity: 0; transition: opacity 0.16s var(--ease); }
+  .modal-role { font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.28em; font-size: 0.72rem; color: rgba(255,255,255,0.8); }
+  .modal-name { font-family: var(--serif); font-weight: 600; font-size: clamp(1.9rem, 4vw, 2.7rem); letter-spacing: -0.3px; margin: 8px 0 0; line-height: 1.05; }
+  .modal-ecg { display: block; width: 150px; height: 22px; margin: 18px 0 6px; overflow: visible; }
+  .modal-ecg path { fill: none; stroke: rgba(255,255,255,0.8); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .modal-bio { font-family: var(--serif); font-weight: 400; font-size: clamp(1.05rem, 2vw, 1.28rem); line-height: 1.65; color: rgba(255,255,255,0.93); margin-top: 16px; white-space: pre-line; }
+  .modal-close { position: absolute; top: 16px; right: 18px; z-index: 3; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; font-size: 1.4rem; line-height: 1; color: var(--white); background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); transition: background 0.25s, transform 0.25s; }
+  .modal-close:hover { background: rgba(255,255,255,0.32); transform: rotate(90deg); }
+  @media (max-width: 660px) {
+    .modal-card { flex-direction: column; width: 92vw; max-height: 90vh; overflow-y: auto; }
+    .modal-photo { flex: none; width: 100%; height: 42vh; }
+    .modal-body { padding: 28px 24px; }
+  }
+  .avatar {
+    width: 118px; height: 118px; margin: 0 auto 24px; border-radius: 50%; overflow: hidden;
+    background: linear-gradient(150deg, rgba(255,255,255,0.35), rgba(255,255,255,0.12));
+    border: 1px solid rgba(255,255,255,0.5); display: grid; place-items: center;
+    box-shadow: 0 14px 32px -14px rgba(55,80,63,0.55);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar svg { width: 52px; height: 52px; }
+  .avatar .initials { font-family: var(--serif); font-weight: 600; font-size: clamp(2rem, 4vw, 2.6rem); color: var(--white); letter-spacing: 0.03em; }
+  .avatar svg path { fill: none; stroke: var(--white); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .officer .name { font-family: var(--serif); font-weight: 600; font-size: clamp(1.5rem, 3vw, 1.9rem); letter-spacing: -0.2px; }
+  .officer .role { font-family: var(--sans); font-weight: 400; text-transform: uppercase; letter-spacing: 0.22em; font-size: clamp(0.66rem, 1.5vw, 0.78rem); color: rgba(255,255,255,0.82); margin-top: 10px; }
+
+  .foot { margin-top: 54px; font-family: var(--sans); font-weight: 300; text-transform: uppercase; letter-spacing: 0.28em; font-size: 0.72rem; color: rgba(255,255,255,0.7); }
+
+  /* ---------- Reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  .r1 { transition-delay: 0.06s; } .r2 { transition-delay: 0.14s; } .r3 { transition-delay: 0.22s; }
+  .r4 { transition-delay: 0.30s; } .r5 { transition-delay: 0.38s; } .r6 { transition-delay: 0.46s; }
+
+  /* ---------- Page transitions ---------- */
+  .tcover { position: fixed; inset: 0; z-index: 9990; pointer-events: none; opacity: 1; }
+  .tcover.sage { background: linear-gradient(135deg, var(--sage-light), var(--sage-mid) 55%, var(--sage-deep)); }
+  .tcover.black { background: #000; }
+  .flytext { position: fixed; z-index: 9992; pointer-events: none; color: var(--white); font-family: var(--serif); font-weight: 500; text-shadow: 0 2px 30px rgba(85,115,94,0.35); display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+
+  @media (max-width: 820px) { .officers { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) {
+    .wrap { padding: 16vh 6vw 80px; }
+    .topbar { padding: 20px 5vw; }
+    .officers { grid-template-columns: 1fr; gap: 20px; }
+    .officer { padding: 36px 26px; }
+    .avatar { width: 104px; height: 104px; margin-bottom: 20px; }
+    .avatar svg { width: 46px; height: 46px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .ecg-divider path { stroke-dashoffset: 0 !important; }
+    .tcover { transition: opacity 0.2s linear; }
+  }
+</style>
+</head>
+<body>
+  <div class="tcover sage" id="rc"></div>
+
+  <div class="bg"></div>
+  <div class="vignette"></div>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="grain"></div>
+
+  <div class="topbar">
+    <a href="index.html" class="back" data-nav data-back><span class="arrow">←</span> Back</a>
+    <span class="mini-mark">The Medical Minute</span>
+  </div>
+
+  <main class="wrap">
+    <h1>Officers</h1>
+    <p class="sub">The students who keep The Medical Minute running, one post at a time.</p>
+
+    <svg class="ecg-divider" viewBox="0 0 220 26" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <path d="M2,13 L86,13 L96,13 L104,3 L112,23 L120,13 L128,13 L204,13 L212,13 L218,13"/>
+    </svg>
+
+    <div class="officers">
+      <div class="officer reveal r1" data-bio="Sai is the President of The Medical Minute, guiding the club's mission to make medical knowledge approachable, engaging, and accessible for students. Passionate about healthcare and education, she brings the team together to create trustworthy, research-based content.&#10;&#10;(Placeholder bio — send me Sai's real about-me and I'll swap it in.)">
+        <div class="avatar"><img src="images/sai.jpg" alt="Sai Pulletikurthi" style="transform: scale(2.5); transform-origin: 49% 37%;" /></div>
+        <div class="name">Sai Pulletikurthi</div>
+        <div class="role">President</div>
+      </div>
+      <div class="officer reveal r2">
+        <div class="avatar"><img src="images/esha.jpg" alt="Esha Jalindre" style="transform: scale(1.7); transform-origin: 50% 33%;" /></div>
+        <div class="name">Esha Jalindre</div>
+        <div class="role">Vice President</div>
+      </div>
+      <div class="officer reveal r3">
+        <div class="avatar"><img src="images/ashi.jpg" alt="Ashi Penmatcha" style="transform: scale(1.5); transform-origin: 50% 30%;" /></div>
+        <div class="name">Ashi Penmatcha</div>
+        <div class="role">Secretary</div>
+      </div>
+      <div class="officer reveal r4">
+        <div class="avatar"><img src="images/thanvi.jpg" alt="Thanvi Balebail" style="object-position: 0% 50%; transform: scale(1.5); transform-origin: 40% 42%;" /></div>
+        <div class="name">Thanvi Balebail</div>
+        <div class="role">Treasurer</div>
+      </div>
+      <div class="officer reveal r5">
+        <div class="avatar"><img src="images/nikki.jpg" alt="Venkata Pentapatti" style="transform: scale(1.7); transform-origin: 46% 24%;" /></div>
+        <div class="name">Venkata Pentapatti (Nikki)</div>
+        <div class="role">Social Media Manager</div>
+      </div>
+      <div class="officer reveal r6">
+        <div class="avatar"><img src="images/sahasra.jpg" alt="Lucky Kadari" style="transform: scale(2.7); transform-origin: 62% 49%;" /></div>
+        <div class="name">Lucky Kadari (Sahasra)</div>
+        <div class="role">Social Media Manager</div>
+      </div>
+      <div class="officer reveal r1">
+        <div class="avatar"><img src="images/aari.jpg" alt="Aariyana Alam" style="transform: scale(1.8); transform-origin: 47% 34%;" /></div>
+        <div class="name">Aariyana Alam (Aari)</div>
+        <div class="role">Outreach Coordinator Manager</div>
+      </div>
+      <div class="officer reveal r2">
+        <div class="avatar"><img src="images/anjaneya.jpg" alt="Anjaneya Narayan" style="transform: scale(2.4); transform-origin: 49% 19%;" /></div>
+        <div class="name">Anjaneya Narayan</div>
+        <div class="role">Outreach Coordinator</div>
+      </div>
+      <div class="officer reveal r3">
+        <div class="avatar"><img src="images/sanvi.jpg" alt="Sanvi Channamallu" style="transform: scale(1.7); transform-origin: 50% 26%;" /></div>
+        <div class="name">Sanvi Channamallu</div>
+        <div class="role">Outreach Coordinator</div>
+      </div>
+    </div>
+
+    <p class="foot reveal">@themedicalminute&nbsp;&nbsp;·&nbsp;&nbsp;New post every day</p>
+  </main>
+
+  <!-- Officer detail modal -->
+  <div class="modal" id="officerModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <button class="modal-close" data-close aria-label="Close">&times;</button>
+      <div class="modal-photo"><img id="mPhoto" src="" alt="" /></div>
+      <div class="modal-body">
+        <div class="modal-role" id="mRole"></div>
+        <h2 class="modal-name" id="mName"></h2>
+        <svg class="modal-ecg" viewBox="0 0 200 24" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="M2,12 L70,12 L80,12 L88,3 L96,21 L104,12 L112,12 L198,12"/></svg>
+        <p class="modal-bio" id="mBio"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const EASE = 'cubic-bezier(0.22,0.75,0.28,1)';
+
+    // ---- Reveal on load (sage cover fades away — matches the incoming transition) ----
+    sessionStorage.setItem('tmm_seen', '1');
+    const rc = document.getElementById('rc');
+    rc.style.transition = 'opacity 0.7s ' + EASE;
+    function reveal() { rc.style.display = ''; setTimeout(() => { rc.style.opacity = '0'; }, 30); setTimeout(() => { rc.style.display = 'none'; }, 850); }
+    window.addEventListener('pageshow', reveal);
+
+    // ---- Scroll reveals ----
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // ---- Officer bios (placeholders — replace the text with each person's real about-me) ----
+    const BIOS = {
+      'Sai Pulletikurthi': "Hi everyone! I'm Sai Pulletikurthi, the Founder and President of The Medical Minute! I created this club to bring people together, help spread awareness about important health topics, and make medical information easier to understand. I've always been interested in healthcare, and I wanted to create a community where students can learn new things, share opportunities, and support one another.\n\nI'm really excited to meet everyone, grow this club, and work with such an amazing team this year.\n\nA fun fact about me is that I love reading and listening to music in my free time!",
+      'Esha Jalindre': "Hi everyone! I'm Esha Jalindre, the Vice President of The Medical Minute! I'm really excited to be part of this club and help create a welcoming environment where students can learn about important health topics, spread awareness, and support one another. I'm looking forward to working with our amazing team, helping the club grow, and making this year both fun and engaging for everyone.\n\nI can't wait to meet all of you and be a part of everything we accomplish together this year!\n\nA fun fact about me is that I play the saxophone and I love to dance.",
+      'Ashi Penmatcha': "Hi, my name is Ashi Penmatcha, I am the Secretary of The Medical Minute! A few fun facts about me are that I love dancing and listening to music in my free time, and one of my favorite parts of science is learning about how the human body works. I also really enjoy helping others and being involved in school activities!\n\nI joined The Medical Minute because I'm interested in the medical field and wanted to be part of a community that spreads health awareness and education.\n\nAs the secretary, I hope to help keep our team organized, support communication between officers, and contribute to creating engaging content that helps educate others about health and medicine!",
+      'Thanvi Balebail': "Hi! My name is Thanvi Balebail, and I'm the treasurer for The Medical Minute. A few fun facts about me are that I enjoy learning about medicine and psychology, I love being creative, and I'm always excited to try new things. I joined The Medical Minute because I wanted to be part of a club that helps students learn more about healthcare in an interesting and meaningful way.\n\nThis year, I hope to contribute by helping with club ideas, supporting events, and making The Medical Minute a welcoming space for everyone.",
+      'Venkata Pentapatti (Nikki)': "My name is Venkata Pentapatti, and I'm the Social Media Manager for The Medical Minute this year. A few fun facts about me are that I enjoy cars, listening to music, and traveling to new places. I joined The Medical Minute because I'm interested in learning more about the medical field and connecting with others who share similar interests.\n\nThis year, I hope to help grow the club's social media, make engaging posts, and contribute new ideas that help the club succeed!",
+      'Lucky Kadari (Sahasra)': "Hi, my name is Lucky Kadari, and I am the Social Media Manager of The Medical Minute. A fun fact about me is that I enjoy reading and listening to music in my free time. I joined The Medical Minute because I hope to go into the medical field when I am older, and I also consider myself a pretty creative person.\n\nAs the Social Media Manager, I hope to help the club grow by creating engaging and creative posts that people look forward to seeing and learning from.",
+      'Aariyana Alam (Aari)': "Hi! My name's Aariyana Alam, most people call me Aari, and I am your new outreach coordinator manager! Some fun facts about me is that I have a hearing disability in both of my ears and I'm from Bangladesh.\n\nI joined The Medical Minute to help others gain more helpful medical knowledge to help them with their day-to-day life. I hope to have many more people join and volunteer with us and to have an amazing time with all of you!",
+      'Anjaneya Narayan': "Hi everyone! My name is Anjaneya Narayan, and I'm one of the Outreach Coordinators for The Medical Minute! I'm a very social person who enjoys meeting and talking to new people. I'm also hardworking and dedicated to the things I'm passionate about. I joined this club to connect with others, grow the club's community, and learn more about healthcare fields that I'm interested in pursuing in the future.\n\nAs an Outreach Coordinator, I hope to help expand the club's social network so more people can learn about The Medical Minute and get involved.\n\nA few fun facts about me are that I enjoy playing Valorant and making model cars in my free time.",
+      'Sanvi Channamallu': "Hi! My name is Sanvi, and I'm excited to be serving as outreach coordinator for The Medical Minute this year! I joined this organization because I'm passionate about healthcare and spreading awareness about important medical topics.\n\nA few fun facts about me: I love traveling, and I enjoy spending time with my friends.\n\nThis year, I hope to contribute by helping create impactful content, educating others, and making a positive difference through our outreach!"
+    };
+
+    // ---- Officer detail modal ----
+    const modal = document.getElementById('officerModal');
+    const mPhoto = document.getElementById('mPhoto');
+    const mName = document.getElementById('mName');
+    const mRole = document.getElementById('mRole');
+    const mBio = document.getElementById('mBio');
+
+    const mPhotoWrap = modal.querySelector('.modal-photo');
+    const mCard = modal.querySelector('.modal-card');
+
+    function openOfficer(card) {
+      const img = card.querySelector('.avatar img');
+      const src = img ? img.getAttribute('src') : '';
+      mPhoto.src = src;
+      mPhoto.alt = card.querySelector('.name').textContent;
+      mPhotoWrap.style.setProperty('--photo', src ? "url('" + src + "')" : 'none');
+      mName.textContent = card.querySelector('.name').textContent;
+      mRole.textContent = card.querySelector('.role').textContent;
+      mBio.textContent = BIOS[mName.textContent] || card.getAttribute('data-bio') || 'About-me coming soon.';
+      modal.classList.remove('closing');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    let closeTimer;
+    function closeOfficer() {
+      if (!modal.classList.contains('open')) return;
+      modal.classList.remove('open');
+      modal.classList.add('closing');
+      modal.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+      clearTimeout(closeTimer);
+      const done = () => { modal.classList.remove('closing'); };
+      const onEnd = () => { done(); mCard.removeEventListener('animationend', onEnd); };
+      mCard.addEventListener('animationend', onEnd);
+      closeTimer = setTimeout(done, 700); // fallback (e.g. reduced motion)
+    }
+
+    document.querySelectorAll('.officer').forEach(card => card.addEventListener('click', () => openOfficer(card)));
+    // clicking anywhere on the modal (backdrop, card, or close button) closes it
+    modal.addEventListener('click', closeOfficer);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeOfficer(); });
+
+    // ---- Aesthetic page transition: gently fade to sage, then navigate ----
+    function fadeTo(url) {
+      const cover = document.createElement('div');
+      cover.className = 'tcover sage';
+      cover.style.opacity = '0';
+      cover.style.transition = 'opacity 0.55s ' + EASE;
+      document.body.appendChild(cover);
+      setTimeout(() => { cover.style.opacity = '1'; }, 20);
+      setTimeout(() => { window.location.href = url; }, 560);
+    }
+
+    document.querySelectorAll('a[data-nav]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const url = link.getAttribute('href');
+        if (!url || url.startsWith('#')) return;
+        e.preventDefault();
+        if (RM) { window.location.href = url; return; }
+        fadeTo(url);
+      });
+    });
+  </script>
+</body>
+</html>
